@@ -621,7 +621,9 @@ print bar
         string errorFragmentBeforePc = source[s..pc];
         string errorFragmentAfterPc = source[pc..e];
 
-        Console.WriteLine($"\nERROR {text} in line {lineNum}: '{errorFragmentBeforePc}_{errorFragmentAfterPc}'\n");
+        Console.WriteLine();
+        Console.WriteLine($"  ERROR {text} in line {lineNum}: {errorFragmentBeforePc}_{errorFragmentAfterPc}");
+        Console.WriteLine();
 
         Environment.Exit(1);
     }
