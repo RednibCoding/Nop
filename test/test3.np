@@ -1,0 +1,5 @@
+foo = 0
+while foo < 10 {
+    println foo
+    foo = foo + 1
+}

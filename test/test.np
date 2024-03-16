@@ -6,11 +6,10 @@ sub demo # do some commenting
 	if 0 | 5 > -2 | 0 print "True" else print "False"
 	x=0
 
-  while x<20
-	{
+  while x<20 {
 		if !x<10 break
 		print "." x=x+1
-	}
+  }
 
     if 1<2 & 2>=1 {
         print "Loollo1"

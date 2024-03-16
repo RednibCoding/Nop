@@ -20,14 +20,11 @@ public class Program
     static Dictionary<string, Var> variables = [];
 
     static string source = """
-print "Hello\n"
-print "Should be on another line\n"
-
-sum = "sum: "
-foo = 45423
-
-bar = sum + "yummy: " + " hoho " + foo
-print bar
+if 1 < 2 {
+    print "smaller"
+} else {
+    print "bigger"
+}
 """;
 
     public static void Main(string[] args)
@@ -83,27 +80,34 @@ print bar
     }
 
     // returns whether a certain string could be taken starting at pc
-    static bool TryTakeStr(string word)
+    static bool TryTakeWord(string word)
     {
         var copyPc = pc;
         foreach (char c in word)
         {
-            if (Take() != c)
+            var take = Take();
+            if (take != c)
             {
                 pc = copyPc;
                 return false;
             }
         }
+        SkipWhite();
         return true;
     }
 
-    // returns the next non-whitespace character
-    static char Next()
+    static void SkipWhite()
     {
         while (Look() == ' ' || Look() == '\t' || Look() == '\n' || Look() == '\r')
         {
             Take();
         }
+    }
+
+    // returns the next non-whitespace character
+    static char Next()
+    {
+        SkipWhite();
         return Look();
     }
 
@@ -180,38 +184,38 @@ print bar
         if (expr.type == 'i')
         {
             var intNum = int.Parse(result);
-            if (TryTakeStr("=="))
+            if (TryTakeWord("=="))
             {
                 boolResult = intNum == MathExpr(ref active);
             }
-            else if (TryTakeStr("!="))
+            else if (TryTakeWord("!="))
             {
                 boolResult = intNum != MathExpr(ref active);
             }
-            else if (TryTakeStr("<="))
+            else if (TryTakeWord("<="))
             {
                 boolResult = intNum <= MathExpr(ref active);
             }
-            else if (TryTakeStr("<"))
+            else if (TryTakeWord("<"))
             {
                 boolResult = intNum < MathExpr(ref active);
             }
-            else if (TryTakeStr(">="))
+            else if (TryTakeWord(">="))
             {
                 boolResult = intNum >= MathExpr(ref active);
             }
-            else if (TryTakeStr(">"))
+            else if (TryTakeWord(">"))
             {
                 boolResult = intNum > MathExpr(ref active);
             }
         }
         else
         {
-            if (TryTakeStr("=="))
+            if (TryTakeWord("=="))
             {
                 boolResult = result == StrExpr(ref active);
             }
-            else if (TryTakeStr("!="))
+            else if (TryTakeWord("!="))
             {
                 boolResult = result != StrExpr(ref active);
             }
@@ -259,7 +263,7 @@ print bar
         {
             num = TakeNextNum();
         }
-        else if (TryTakeStr("val("))
+        else if (TryTakeWord("val("))
         {
             var str = Str(ref active);
             if (active)
@@ -360,13 +364,13 @@ print bar
         var str = "";
         if (TakeNext('\"'))
         {
-            while (!TryTakeStr("\""))
+            while (!TryTakeWord("\""))
             {
                 if (Look() == '\0')
                 {
                     Error("unexpected EOF");
                 }
-                if (TryTakeStr("\\n"))
+                if (TryTakeWord("\\n"))
                 {
                     str += '\n';
                 }
@@ -376,7 +380,7 @@ print bar
                 }
             }
         }
-        else if (TryTakeStr("str(")) // str(...)
+        else if (TryTakeWord("str(")) // str(...)
         {
             str = MathExpr(ref active).ToString();
             if (!TakeNext(')'))
@@ -384,7 +388,7 @@ print bar
                 Error("missing");
             }
         }
-        else if (TryTakeStr("input()"))
+        else if (TryTakeWord("input()"))
         {
             if (active)
             {
@@ -472,7 +476,7 @@ print bar
         }
 
         Next();
-        if (TryTakeStr("else")) // process eles block?
+        if (TryTakeWord("else")) // process else block?
         {
             if (active && !b)
             {
@@ -556,29 +560,39 @@ print bar
         }
     }
 
+    static void DoPrintLn(ref bool active)
+    {
+        DoPrint(ref active);
+        Console.WriteLine();
+    }
+
     static void Stmt(ref bool active)
     {
-        if (TryTakeStr("print"))
+        if (TryTakeWord("println"))
+        {
+            DoPrintLn(ref active);
+        }
+        else if (TryTakeWord("print"))
         {
             DoPrint(ref active);
         }
-        else if (TryTakeStr("if"))
+        else if (TryTakeWord("if"))
         {
             DoIfElse(ref active);
         }
-        else if (TryTakeStr("while"))
+        else if (TryTakeWord("while"))
         {
             DoWhile(ref active);
         }
-        else if (TryTakeStr("break"))
+        else if (TryTakeWord("break"))
         {
             DoBreak(ref active);
         }
-        else if (TryTakeStr("gosub"))
+        else if (TryTakeWord("gosub"))
         {
             DoGoSub(ref active);
         }
-        else if (TryTakeStr("sub"))
+        else if (TryTakeWord("sub"))
         {
             DoSubDecl();
         }
@@ -590,6 +604,7 @@ print bar
 
     static void Block(ref bool active)
     {
+        var test = source[pc];
         if (TakeNext('{'))
         {
             while (!TakeNext('}'))
