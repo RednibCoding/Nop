@@ -23,17 +23,16 @@ public class Program
 print "Hello\n"
 print "Should be on another line\n"
 
-koffer = "sum: "
-lollo = 45423
+sum = "sum: "
+foo = 45423
 
-pimml = koffer + koffer + " hoho" + lollo
-print pimml
-
+bar = sum + "yummy: " + " hoho " + foo
+print bar
 """;
 
     public static void Main(string[] args)
     {
-        source += '\0'; Prog(); return;
+        // source += '\0'; Prog(); return;
 
         source = "";
 

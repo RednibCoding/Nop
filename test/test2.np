@@ -1,0 +1,8 @@
+print "Hello\n"
+print "Should be on another line\n"
+
+sum = "sum: "
+foo = 45423
+
+bar = sum + "yummy: " + " hoho " + foo
+print bar
