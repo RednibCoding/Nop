@@ -61,7 +61,7 @@ if 1 < 2 {
     // returns the current character while skipping over comments
     static char Look()
     {
-        if (source[pc] == '#')
+        if (source[pc] == ';')
         {
             while (source[pc] != '\n' && source[pc] != '\0')
             {

@@ -1,4 +1,4 @@
-sub demo # do some commenting
+sub demo ; do some commenting
 {
   a = "math expressions "
   b = (10 + 1*2 + (4 + 5)*2 )*3 - val("111")
@@ -18,5 +18,5 @@ sub demo # do some commenting
     }
 }
 
-print "Hello, World!\n"     # program entry point
+print "Hello, World!\n"     ;program entry point
 gosub demo
