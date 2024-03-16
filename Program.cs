@@ -21,12 +21,19 @@ public class Program
 
     static string source = """
 print "Hello\n"
-print "Should be on another line"
+print "Should be on another line\n"
+
+koffer = "sum: "
+lollo = 45423
+
+pimml = koffer + koffer + " hoho" + lollo
+print pimml
+
 """;
 
     public static void Main(string[] args)
     {
-        // Prog(); return;
+        source += '\0'; Prog(); return;
 
         source = "";
 
@@ -150,6 +157,17 @@ print "Should be on another line"
         return alnum;
     }
 
+    static int TakeNextNum()
+    {
+        int num = 0;
+        while (IsDigit(Look()))
+        {
+            num = 10 * num + Take() - '0';
+        }
+
+        return num;
+    }
+
     // --------------------------------------------------------------------------------------------------
 
     static bool BoolFactor(ref bool active)
@@ -240,10 +258,7 @@ print "Should be on another line"
         }
         else if (IsDigit(Next()))
         {
-            while (IsDigit(Look()))
-            {
-                num = 10 * num + Take() - '0';
-            }
+            num = TakeNextNum();
         }
         else if (TryTakeStr("val("))
         {
@@ -385,9 +400,17 @@ print "Should be on another line"
             {
                 str = val.value;
             }
+            else if (val?.type == 'i')
+            {
+                str = val.value.ToString();
+            }
+            else if (IsDigit(Look()))
+            {
+                str = TakeNextNum().ToString();
+            }
             else
             {
-                Error("unknown variable");
+                Error("expected variable or literal");
             }
         }
 
